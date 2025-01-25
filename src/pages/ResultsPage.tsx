@@ -1,20 +1,72 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, RotateCcw, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { RotateCcw, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { useResume } from '../context/ResumeContext';
+import PdfViewer from './PdfViewer';
+
+import axios from 'axios';
 
 function ResultsPage() {
   const navigate = useNavigate();
-
-  // Mock analysis results
-  const analysisResults = {
-    atsScore: 85,
-    recommendations: [
-      { type: 'success', text: 'Good use of keywords' },
-      { type: 'warning', text: 'Consider adding more quantifiable achievements' },
-      { type: 'error', text: 'Missing contact information' },
+  const { file } = useResume();
+  const [analysisResults, setAnalysisResults] = useState({
+    "atsScore": 85,
+    "recommendations": [
+      { "type": "success", "text": "Good use of keywords" },
+      { "type": "warning", "text": "Consider adding more quantifiable achievements" },
+      { "type": "error", "text": "Missing contact information" }
     ],
-    matchPercentage: 78,
-  };
+    "matchPercentage": 78
+  });
+  const url = import.meta.env.VITE_BACKEND_URL;
+  // Mock analysis results
+
+  useEffect(() => {
+    async function fetch() {
+
+      const promptText = `
+    You are an HR specialist with expertise in resume screening and Applicant Tracking System (ATS) analysis. Your job is to review resumes uploaded as files and provide a detailed evaluation in JSON format.
+
+    For the provided resume, analyze the following:
+    1. ATS Score: A score out of 100 based on how well the resume is optimized for ATS.
+    2. Recommendations: A list of feedback categorized as success, warning, or error.
+       - success: Positive elements in the resume.
+       - warning: Areas where improvements can enhance the resume but are not critical.
+       - error: Missing or critical issues that should be addressed immediately.
+    3. Match Percentage: A percentage (0–100) indicating how well the resume matches the job description.
+
+    Please return the analysis in the following format:
+    {
+      "atsScore": 85,
+      "recommendations": [
+        { "type": "success", "text": "Good use of keywords" },
+        { "type": "warning", "text": "Consider adding more quantifiable achievements" },
+        { "type": "error", "text": "Missing contact information" }
+      ],
+      "matchPercentage": 78
+    }
+
+    The resume file will be sent along with this request. Please analyze the document and populate the JSON based on its content.
+  `;
+
+
+      const formData = new FormData();
+      formData.append('file', file); // Add the file
+      formData.append('prompt', promptText);
+
+      const response = await axios.post(url + "/upload", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Important header for FormData
+        },
+      });
+
+      setAnalysisResults(response.data);
+
+    }
+
+    fetch();
+
+  }, []);
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -37,7 +89,7 @@ function ResultsPage() {
           <div className="lg:w-2/5">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Analysis Results</h2>
-              
+
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-600">ATS Score</span>
@@ -52,11 +104,13 @@ function ResultsPage() {
               </div>
 
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-4">Recommendations</h3>
-                <div className="space-y-3">
+                <h3 className="text-lg font-semibold mb-4 text-zinc-600">Recommendations</h3>
+                <div className="space-y-3 text-sm">
                   {analysisResults.recommendations.map((rec, index) => (
                     <div key={index} className="flex items-start gap-2">
-                      {getIcon(rec.type)}
+                      <span className="flex items-center text-gray-500">
+                        {getIcon(rec.type)}
+                      </span>
                       <span className="text-gray-700">{rec.text}</span>
                     </div>
                   ))}
@@ -64,10 +118,6 @@ function ResultsPage() {
               </div>
 
               <div className="flex gap-4">
-                <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Report
-                </button>
                 <button
                   onClick={() => navigate('/')}
                   className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
@@ -84,10 +134,7 @@ function ResultsPage() {
             <div className="bg-white rounded-xl shadow-lg p-6 h-[800px] overflow-y-auto">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Resume Preview</h2>
               <div className="prose max-w-none">
-                {/* Resume content would be rendered here */}
-                <div className="text-gray-500 text-center mt-20">
-                  Resume preview would be displayed here
-                </div>
+                    <PdfViewer />
               </div>
             </div>
           </div>

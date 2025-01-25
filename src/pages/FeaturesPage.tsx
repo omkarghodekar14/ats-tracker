@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Code, Search, Briefcase, Terminal } from 'lucide-react';
+import { Code, Search, Terminal } from 'lucide-react';
 
 function FeatureCard({ icon: Icon, title, description, path }: { icon: any, title: string, description: string, path: string }) {
   const navigate = useNavigate();

@@ -6,17 +6,10 @@ function JobDescriptionMatcher() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [jobDescription, setJobDescription] = useState<string>('');
+  const [jobdesc, setjobDesc] = useState('');
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setJobDescription(e.target?.result as string);
-      setStep(2);
-    };
-    reader.readAsText(file);
+  function handleFileUpload(event) {
+    setjobDesc(event.target.value);
   };
 
   const mockAnalysis = {
@@ -43,10 +36,9 @@ function JobDescriptionMatcher() {
             </h1>
             <div className="card w-full max-w-lg text-center">
               <input
-                type="file"
-                onChange={handleFileUpload}
-                accept=".txt,.pdf,.docx"
-                className="hidden"
+                type="text"
+                value = {jobdesc}
+                onChange={()=> handleFileUpload(event)}
                 id="job-description-upload"
               />
               <label
