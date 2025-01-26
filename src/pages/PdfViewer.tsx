@@ -13,9 +13,9 @@ export default function PdfViewer() {
   }, [file])
 
   return (
-    <div className=''>
+    <div>
       {fileUrl && (
-        <object data={fileUrl} type="application/pdf" width="100%" height="600px">
+        <object data={fileUrl} type="application/pdf" width="450px" height="650px">
           <p>Your browser does not support embedded PDFs. Download the PDF to view it: <a href={fileUrl}>Download PDF</a></p>
         </object>
       )}

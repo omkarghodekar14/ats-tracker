@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import { useResume } from '../context/ResumeContext';
 
 function JobDescriptionMatcher() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [jobDescription, setJobDescription] = useState<string>('');
   const [jobdesc, setjobDesc] = useState('');
+  const {setJobDescription} = useResume();
 
   function handleFileUpload(event) {
     setjobDesc(event.target.value);
   };
+
+  function handleMatch(event) {
+    event.preventDefault();
+    setJobDescription(jobdesc);
+    navigate('/jobmatcher')
+  }
 
   const mockAnalysis = {
     matchScore: 75,
@@ -30,28 +37,28 @@ function JobDescriptionMatcher() {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         {step === 1 ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh]">
-            <h1 className="text-4xl font-bold text-primary mb-6">
-              Upload Job Description
-            </h1>
-            <div className="card w-full max-w-lg text-center">
-              <input
-                type="text"
-                value = {jobdesc}
-                onChange={()=> handleFileUpload(event)}
-                id="job-description-upload"
+          <div className="flex flex-col items-center justify-center h-[80vh] min-h-[60vh]">
+            <div className="flex flex-col gap-2 w-full max-w-lg text-center">
+              <textarea
+                value={jobdesc}
+                className='text-black border-zinc-400 p-3 focus:outline-none rounded-lg resize-none'
+                rows={10}
+                placeholder='Add job description here'
+                onChange={(event) => handleFileUpload(event)}
               />
               <label
                 htmlFor="job-description-upload"
-                className="btn-primary inline-flex items-center cursor-pointer"
+                className="btn-primary inline-flex items-center cursor-pointer justify-center"
+                onClick={()=> handleMatch(event)}
               >
-                <Upload className="w-5 h-5 mr-2" />
-                Select Job Description
+                <Upload className=" mr-2 w-auto" />
+                Match Job Description
               </label>
-              <p className="mt-4 text-sm text-gray-600">
-                Upload a job description to analyze match percentage
-              </p>
+
             </div>
+            <p className="mt-4 text-sm text-gray-600">
+              Upload a job description to analyze match percentage
+            </p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
@@ -77,13 +84,12 @@ function JobDescriptionMatcher() {
                     >
                       <span className="font-semibold">{skill.skill}</span>
                       <span
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          skill.priority === 'high'
+                        className={`px-3 py-1 rounded-full text-sm ${skill.priority === 'high'
                             ? 'bg-red-100 text-red-800'
                             : skill.priority === 'medium'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-green-100 text-green-800'
-                        }`}
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-green-100 text-green-800'
+                          }`}
                       >
                         {skill.priority} priority
                       </span>

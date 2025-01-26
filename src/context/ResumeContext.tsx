@@ -7,6 +7,7 @@ interface ResumeContextType {
   setUploadProgress: (progress: number) => void;
   analysisResults: any | null;
   setAnalysisResults: (results: any) => void;
+  setJobDescription: (results: any) => void;
 }
 
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
@@ -15,6 +16,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [analysisResults, setAnalysisResults] = useState(null);
+  const [jobDescription, setJobDescription] = useState('');
 
   return (
     <ResumeContext.Provider
@@ -25,6 +27,8 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         setUploadProgress,
         analysisResults,
         setAnalysisResults,
+        jobDescription,
+        setJobDescription
       }}
     >
       {children}

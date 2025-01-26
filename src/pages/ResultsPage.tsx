@@ -10,11 +10,11 @@ function ResultsPage() {
   const navigate = useNavigate();
   const { file } = useResume();
   const [analysisResults, setAnalysisResults] = useState({
-    "atsScore": 85,
+    "atsScore": "",
     "recommendations": [
-      { "type": "success", "text": "Good use of keywords" },
-      { "type": "warning", "text": "Consider adding more quantifiable achievements" },
-      { "type": "error", "text": "Missing contact information" }
+      { "type": "", "text": "" },
+      { "type": "", "text": "" },
+      { "type": "", "text": "" }
     ],
     "matchPercentage": 78
   });
@@ -86,7 +86,7 @@ function ResultsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Panel - Analysis Results */}
-          <div className="lg:w-2/5">
+          <div className="lg:w-3/5 h-full">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Analysis Results</h2>
 
@@ -130,8 +130,8 @@ function ResultsPage() {
           </div>
 
           {/* Right Panel - Resume Viewer */}
-          <div className="lg:w-3/5">
-            <div className="bg-white rounded-xl shadow-lg p-6 h-[800px] overflow-y-auto">
+          <div className="lg:w-2/5">
+            <div className="bg-white rounded-xl shadow-lg p-6 h-full overflow-y-auto">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Resume Preview</h2>
               <div className="prose max-w-none">
                     <PdfViewer />
